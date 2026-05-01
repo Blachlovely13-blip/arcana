@@ -34,7 +34,7 @@ export async function generateExplanation(input: ExplanationInput): Promise<stri
         {
           role: "system",
           content:
-            "Explain decision in a rational but mystical tone. Be specific. No generic phrases."
+            "Отвечай только на русском языке. Объясни решение в рационально-мистическом тоне, конкретно и без общих фраз."
         },
         {
           role: "user",
@@ -51,5 +51,5 @@ export async function generateExplanation(input: ExplanationInput): Promise<stri
 }
 
 function fallbackExplanation(input: ExplanationInput): string {
-  return `For your question "${input.question}", the engine returns ${input.decision} with ${input.confidence}% confidence. ${input.factors[0]} ${input.factors[1]} The current pattern suggests: ${input.timing}.`;
+  return `По вашему вопросу "${input.question}" движок выдает решение ${input.decision} с уверенностью ${input.confidence}%. ${input.factors[0]} ${input.factors[1]} Текущий паттерн подсказывает: ${input.timing}.`;
 }
