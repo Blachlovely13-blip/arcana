@@ -1,5 +1,5 @@
-import { useMemo, useState } from "react";
-import { analyze, type AnalyzeResponse } from "./api";
+import { useEffect, useMemo, useState } from "react";
+import { analyze, getDestinyMatrix, type AnalyzeResponse, type DestinyMatrixResponse } from "./api";
 import { Home } from "./screens/Home";
 import { Onboarding } from "./screens/Onboarding";
 import { Result } from "./screens/Result";
@@ -23,6 +23,7 @@ export default function App({ telegramId }: AppProps) {
   const [birthTime, setBirthTime] = useState(localStorage.getItem(BIRTH_TIME_KEY) || "12:00");
   const [question, setQuestion] = useState("");
   const [result, setResult] = useState<AnalyzeResponse | null>(null);
+  const [matrixData, setMatrixData] = useState<DestinyMatrixResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -33,6 +34,13 @@ export default function App({ telegramId }: AppProps) {
     localStorage.setItem(BIRTH_TIME_KEY, birthTime);
     setScreen("home");
   };
+
+  useEffect(() => {
+    if (screen !== "home" || !birthDate) return;
+    getDestinyMatrix(birthDate)
+      .then(setMatrixData)
+      .catch((err) => setError(err instanceof Error ? err.message : "Не удалось получить матрицу"));
+  }, [screen, birthDate]);
 
   const handleAnalyze = async () => {
     setLoading(true);
@@ -75,6 +83,7 @@ export default function App({ telegramId }: AppProps) {
           onQuestionChange={setQuestion}
           onAnalyze={handleAnalyze}
           loading={loading}
+          matrixData={matrixData}
         />
       )}
 

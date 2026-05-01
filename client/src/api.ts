@@ -13,6 +13,14 @@ export type AnalyzeResponse = {
   factors: string[];
 };
 
+export type DestinyMatrixResponse = {
+  coreNumber: number;
+  soulNumber: number;
+  fateNumber: number;
+  matrix: number[][];
+  interpretation: string[];
+};
+
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL?.trim();
 
 export async function analyze(data: AnalyzeRequest): Promise<AnalyzeResponse> {
@@ -30,4 +38,17 @@ export async function analyze(data: AnalyzeRequest): Promise<AnalyzeResponse> {
   }
 
   return (await response.json()) as AnalyzeResponse;
+}
+
+export async function getDestinyMatrix(birthDate: string): Promise<DestinyMatrixResponse> {
+  const endpoint = API_BASE_URL
+    ? `${API_BASE_URL}/matrix?birthDate=${encodeURIComponent(birthDate)}`
+    : `/matrix?birthDate=${encodeURIComponent(birthDate)}`;
+  const response = await fetch(endpoint);
+
+  if (!response.ok) {
+    throw new Error(`Matrix request failed: ${response.status}`);
+  }
+
+  return (await response.json()) as DestinyMatrixResponse;
 }
