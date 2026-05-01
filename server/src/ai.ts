@@ -1,4 +1,4 @@
-import { OpenAI } from "openai";
+import OpenAIImport from "openai";
 
 type ExplanationInput = {
   decision: "GO" | "WAIT" | "NO";
@@ -8,8 +8,18 @@ type ExplanationInput = {
   question: string;
 };
 
+const OpenAIClient = ((OpenAIImport as unknown as { default?: typeof OpenAIImport }).default ||
+  OpenAIImport) as unknown as new (args: { apiKey: string }) => {
+  responses: {
+    create: (args: {
+      model: string;
+      input: Array<{ role: "system" | "user"; content: string }>;
+    }) => Promise<{ output_text?: string }>;
+  };
+};
+
 const client = process.env.OPENAI_API_KEY
-  ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
+  ? new OpenAIClient({ apiKey: process.env.OPENAI_API_KEY })
   : null;
 
 export async function generateExplanation(input: ExplanationInput): Promise<string> {
