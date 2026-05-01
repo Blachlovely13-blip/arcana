@@ -1,24 +1,32 @@
 import Database from "better-sqlite3";
 
-const db = new Database("arcana.db");
+let db: Database.Database | null = null;
 
-db.exec(`
-  CREATE TABLE IF NOT EXISTS users (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    telegram_id TEXT NOT NULL UNIQUE,
-    birth_date TEXT NOT NULL
-  );
+try {
+  db = new Database("arcana.db");
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS users (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      telegram_id TEXT NOT NULL UNIQUE,
+      birth_date TEXT NOT NULL
+    );
 
-  CREATE TABLE IF NOT EXISTS decisions (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    telegram_id TEXT,
-    question TEXT NOT NULL,
-    result TEXT NOT NULL,
-    created_at TEXT NOT NULL DEFAULT (datetime('now'))
-  );
-`);
+    CREATE TABLE IF NOT EXISTS decisions (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      telegram_id TEXT,
+      question TEXT NOT NULL,
+      result TEXT NOT NULL,
+      created_at TEXT NOT NULL DEFAULT (datetime('now'))
+    );
+  `);
+} catch (error) {
+  // Vercel serverless runtime may not support native sqlite bindings.
+  // Keep API operational without persistence for MVP deployment.
+  console.warn("SQLite init failed, running without persistence:", error);
+}
 
 export function saveUser(telegramId: string, birthDate: string): void {
+  if (!db) return;
   const stmt = db.prepare(`
     INSERT INTO users (telegram_id, birth_date)
     VALUES (?, ?)
@@ -28,6 +36,7 @@ export function saveUser(telegramId: string, birthDate: string): void {
 }
 
 export function saveDecision(telegramId: string | null, question: string, result: string): void {
+  if (!db) return;
   const stmt = db.prepare(`
     INSERT INTO decisions (telegram_id, question, result)
     VALUES (?, ?, ?)
