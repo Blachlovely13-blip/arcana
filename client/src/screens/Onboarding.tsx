@@ -15,12 +15,12 @@ export function Onboarding({
 }: OnboardingProps) {
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-semibold">Arcana Profile</h1>
-      <p className="text-sm text-slate-300">Enter your birth data to calibrate the decision engine.</p>
+      <h1 className="text-2xl font-semibold">Создание натальной карты</h1>
+      <p className="text-sm text-slate-300">Введите данные рождения, чтобы получить визуальную карту и персональный разбор.</p>
 
       <div className="space-y-4 rounded-xl border border-slate-700 bg-slate-900/50 p-4">
         <div>
-          <label className="text-sm text-slate-300">Birth date</label>
+          <label className="text-sm text-slate-300">Дата рождения</label>
           <input
             type="date"
             className="mt-1 w-full rounded-lg border border-slate-600 bg-slate-950 p-2 outline-none focus:border-violet-500"
@@ -29,7 +29,7 @@ export function Onboarding({
           />
         </div>
         <div>
-          <label className="text-sm text-slate-300">Birth time</label>
+          <label className="text-sm text-slate-300">Время рождения</label>
           <input
             type="time"
             className="mt-1 w-full rounded-lg border border-slate-600 bg-slate-950 p-2 outline-none focus:border-violet-500"
@@ -44,7 +44,7 @@ export function Onboarding({
         onClick={onContinue}
         disabled={!birthDate || !birthTime}
       >
-        Continue
+        Построить карту
       </button>
     </div>
   );

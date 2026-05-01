@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
-import { analyze, getDestinyMatrix, type AnalyzeResponse, type DestinyMatrixResponse } from "./api";
+import { analyze, getNatalReport, type AnalyzeResponse, type NatalReportResponse } from "./api";
 import { Home } from "./screens/Home";
+import { NatalOverview } from "./screens/NatalOverview";
 import { Onboarding } from "./screens/Onboarding";
 import { Result } from "./screens/Result";
 
-type Screen = "onboarding" | "home" | "result";
+type Screen = "onboarding" | "natal" | "home" | "result";
 
 type AppProps = {
   telegramId?: string;
@@ -16,30 +17,38 @@ const BIRTH_TIME_KEY = "arcana_birth_time";
 export default function App({ telegramId }: AppProps) {
   const [screen, setScreen] = useState<Screen>(() => {
     const hasProfile = localStorage.getItem(BIRTH_DATE_KEY) && localStorage.getItem(BIRTH_TIME_KEY);
-    return hasProfile ? "home" : "onboarding";
+    return hasProfile ? "natal" : "onboarding";
   });
 
   const [birthDate, setBirthDate] = useState(localStorage.getItem(BIRTH_DATE_KEY) || "");
   const [birthTime, setBirthTime] = useState(localStorage.getItem(BIRTH_TIME_KEY) || "12:00");
   const [question, setQuestion] = useState("");
   const [result, setResult] = useState<AnalyzeResponse | null>(null);
-  const [matrixData, setMatrixData] = useState<DestinyMatrixResponse | null>(null);
+  const [natalReport, setNatalReport] = useState<NatalReportResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [natalLoading, setNatalLoading] = useState(false);
 
-  const title = useMemo(() => (screen === "result" ? "Arcana Result" : "Arcana"), [screen]);
+  const title = useMemo(() => {
+    if (screen === "result") return "Результат Arcana";
+    if (screen === "natal") return "Натальная карта";
+    if (screen === "home") return "Вопросы по карте";
+    return "Arcana";
+  }, [screen]);
 
   const handleContinue = () => {
     localStorage.setItem(BIRTH_DATE_KEY, birthDate);
     localStorage.setItem(BIRTH_TIME_KEY, birthTime);
-    setScreen("home");
+    setScreen("natal");
   };
 
   useEffect(() => {
-    if (screen !== "home" || !birthDate) return;
-    getDestinyMatrix(birthDate)
-      .then(setMatrixData)
-      .catch((err) => setError(err instanceof Error ? err.message : "Не удалось получить матрицу"));
+    if (!["natal", "home"].includes(screen) || !birthDate) return;
+    setNatalLoading(true);
+    getNatalReport(birthDate)
+      .then(setNatalReport)
+      .catch((err) => setError(err instanceof Error ? err.message : "Не удалось получить натальную карту"))
+      .finally(() => setNatalLoading(false));
   }, [screen, birthDate]);
 
   const handleAnalyze = async () => {
@@ -83,7 +92,15 @@ export default function App({ telegramId }: AppProps) {
           onQuestionChange={setQuestion}
           onAnalyze={handleAnalyze}
           loading={loading}
-          matrixData={matrixData}
+          natalReport={natalReport}
+        />
+      )}
+
+      {screen === "natal" && (
+        <NatalOverview
+          report={natalReport}
+          loading={natalLoading}
+          onContinue={() => setScreen("home")}
         />
       )}
 

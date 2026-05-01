@@ -28,7 +28,7 @@ export function Result({ result, onBack }: ResultProps) {
         className="w-full rounded-lg border border-slate-500 px-4 py-3 text-sm font-semibold hover:bg-slate-800"
         onClick={onBack}
       >
-        Ask another question
+        Задать следующий вопрос
       </button>
     </div>
   );

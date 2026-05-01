@@ -13,10 +13,10 @@ export function QuestionForm({
 }: QuestionFormProps) {
   return (
     <div className="space-y-4 rounded-xl border border-slate-700 bg-slate-900/50 p-4">
-      <label className="text-sm text-slate-300">Ask your decision question</label>
+      <label className="text-sm text-slate-300">Ваш вопрос по карте</label>
       <textarea
         className="h-32 w-full rounded-lg border border-slate-600 bg-slate-950 p-3 text-sm outline-none focus:border-violet-500"
-        placeholder="Should I start this project this month?"
+        placeholder="Стоит ли мне менять работу в ближайшие 2 месяца?"
         value={question}
         onChange={(e) => onQuestionChange(e.target.value)}
       />
@@ -25,7 +25,7 @@ export function QuestionForm({
         onClick={onSubmit}
         disabled={loading || !question.trim()}
       >
-        {loading ? "Analyzing..." : "Analyze"}
+        {loading ? "Анализируем..." : "Получить рекомендацию"}
       </button>
     </div>
   );

@@ -21,6 +21,17 @@ export type DestinyMatrixResponse = {
   interpretation: string[];
 };
 
+export type NatalReportResponse = {
+  sign: string;
+  signRu: string;
+  element: "Огонь" | "Земля" | "Воздух" | "Вода";
+  lifePath: number;
+  tone: "Активный" | "Сбалансированный" | "Осторожный";
+  strengths: string[];
+  growthZone: string;
+  forecast: string;
+};
+
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL?.trim();
 
 export async function analyze(data: AnalyzeRequest): Promise<AnalyzeResponse> {
@@ -51,4 +62,17 @@ export async function getDestinyMatrix(birthDate: string): Promise<DestinyMatrix
   }
 
   return (await response.json()) as DestinyMatrixResponse;
+}
+
+export async function getNatalReport(birthDate: string): Promise<NatalReportResponse> {
+  const endpoint = API_BASE_URL
+    ? `${API_BASE_URL}/natal-report?birthDate=${encodeURIComponent(birthDate)}`
+    : `/natal-report?birthDate=${encodeURIComponent(birthDate)}`;
+  const response = await fetch(endpoint);
+
+  if (!response.ok) {
+    throw new Error(`Natal report request failed: ${response.status}`);
+  }
+
+  return (await response.json()) as NatalReportResponse;
 }

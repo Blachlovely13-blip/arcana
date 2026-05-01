@@ -3,6 +3,7 @@ import { generateExplanation } from "./ai.js";
 import { saveDecision, saveUser } from "./db.js";
 import { buildDestinyMatrix } from "./logic/destinyMatrix.js";
 import { runDeterministicEngine } from "./logic/decisionEngine.js";
+import { buildNatalReport } from "./logic/natalReport.js";
 
 type AnalyzeBody = {
   birthDate?: string;
@@ -20,6 +21,15 @@ router.get("/matrix", (req, res) => {
   }
 
   return res.json(buildDestinyMatrix(birthDate));
+});
+
+router.get("/natal-report", (req, res) => {
+  const birthDate = String(req.query.birthDate || "").trim();
+  if (!birthDate) {
+    return res.status(400).json({ error: "birthDate query param is required" });
+  }
+
+  return res.json(buildNatalReport(birthDate));
 });
 
 router.post("/analyze", async (req, res) => {

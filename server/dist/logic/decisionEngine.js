@@ -8,15 +8,15 @@ export function runDeterministicEngine(input) {
     let momentum = astro.momentum;
     let risk = astro.riskLevel;
     const factors = [];
-    factors.push(`Life Path ${lifePath} influences your baseline energy.`);
-    factors.push(`${astro.sign} pattern sets momentum ${astro.momentum} and risk ${astro.riskLevel}.`);
-    if (question.includes("change")) {
+    factors.push(`Число жизненного пути ${lifePath} задает базовый энергетический фон.`);
+    factors.push(`Знак ${astro.sign} формирует импульс ${astro.momentum} и уровень риска ${astro.riskLevel}.`);
+    if (question.includes("change") || question.includes("измен")) {
         risk += 10;
-        factors.push("Question contains 'change': volatility risk increased.");
+        factors.push("Вопрос про изменения: риск нестабильности повышен.");
     }
-    if (question.includes("start")) {
+    if (question.includes("start") || question.includes("нач")) {
         momentum += 8;
-        factors.push("Question contains 'start': initiative momentum increased.");
+        factors.push("Вопрос про старт: импульс к действию усилен.");
     }
     const rawScore = lifePathBoost + momentum - risk;
     const score = clamp(rawScore, 0, 100);
@@ -49,11 +49,11 @@ function buildTimingWindow(score) {
     const end = new Date(now);
     start.setDate(now.getDate() + startOffset);
     end.setDate(start.getDate() + span);
-    const fmt = (d) => d.toLocaleDateString("en-US", {
-        month: "short",
+    const fmt = (d) => d.toLocaleDateString("ru-RU", {
+        month: "long",
         day: "numeric"
     });
-    return `Best window: ${fmt(start)}-${fmt(end)}`;
+    return `Лучшее окно: ${fmt(start)}-${fmt(end)}`;
 }
 function clamp(value, min, max) {
     return Math.min(max, Math.max(min, value));

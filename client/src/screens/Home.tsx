@@ -1,5 +1,5 @@
-import type { DestinyMatrixResponse } from "../api";
-import { DestinyMatrixCard } from "../components/DestinyMatrixCard";
+import type { NatalReportResponse } from "../api";
+import { NatalChartCard } from "../components/NatalChartCard";
 import { QuestionForm } from "../components/QuestionForm";
 
 type HomeProps = {
@@ -7,17 +7,17 @@ type HomeProps = {
   onQuestionChange: (v: string) => void;
   onAnalyze: () => void;
   loading: boolean;
-  matrixData: DestinyMatrixResponse | null;
+  natalReport: NatalReportResponse | null;
 };
 
-export function Home({ question, onQuestionChange, onAnalyze, loading, matrixData }: HomeProps) {
+export function Home({ question, onQuestionChange, onAnalyze, loading, natalReport }: HomeProps) {
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-semibold">Ask Arcana</h1>
+      <h1 className="text-2xl font-semibold">Вопросы по натальной карте</h1>
       <p className="text-sm text-slate-300">
-        Сначала проверьте вашу матрицу судьбы, затем задайте один четкий вопрос для рекомендации.
+        Задайте конкретный вопрос по вашей ситуации: стоит ли начинать, ждать, менять направление или фокус.
       </p>
-      <DestinyMatrixCard matrixData={matrixData} />
+      {natalReport && <NatalChartCard report={natalReport} />}
       <QuestionForm
         question={question}
         onQuestionChange={onQuestionChange}

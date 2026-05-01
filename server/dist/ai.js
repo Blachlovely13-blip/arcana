@@ -1,6 +1,8 @@
-import OpenAI from "openai";
+import OpenAIImport from "openai";
+const OpenAIClient = (OpenAIImport.default ||
+    OpenAIImport);
 const client = process.env.OPENAI_API_KEY
-    ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
+    ? new OpenAIClient({ apiKey: process.env.OPENAI_API_KEY })
     : null;
 export async function generateExplanation(input) {
     if (!client) {
@@ -12,7 +14,7 @@ export async function generateExplanation(input) {
             input: [
                 {
                     role: "system",
-                    content: "Explain decision in a rational but mystical tone. Be specific. No generic phrases."
+                    content: "Отвечай только на русском языке. Объясни решение в рационально-мистическом тоне, конкретно и без общих фраз."
                 },
                 {
                     role: "user",
@@ -28,5 +30,5 @@ export async function generateExplanation(input) {
     }
 }
 function fallbackExplanation(input) {
-    return `For your question "${input.question}", the engine returns ${input.decision} with ${input.confidence}% confidence. ${input.factors[0]} ${input.factors[1]} The current pattern suggests: ${input.timing}.`;
+    return `По вашему вопросу "${input.question}" движок выдает решение ${input.decision} с уверенностью ${input.confidence}%. ${input.factors[0]} ${input.factors[1]} Текущий паттерн подсказывает: ${input.timing}.`;
 }
